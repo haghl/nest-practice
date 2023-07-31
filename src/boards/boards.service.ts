@@ -13,16 +13,18 @@ export class BoardsService {
   // getAllBoards(): Boards[] {
   //   return this.boards
   // }
-  getBoardById(id: number): Promise<Board> {
-    const found = this.boardRepository.findOneBy({ id })
+  async getBoardById(id: number): Promise<Board> {
+    const found = await this.boardRepository.findOneBy({ id })
     if (!found) throw new NotFoundException(`해당 게시물이 없습니다.`)
     return found
   }
-  // creatBoards(createBoardDto: CreateBoardDto) {
-  //   const board: Boards = { ...createBoardDto, id: uuid(), status: BoardStatus.PUBLIC }
-  //   this.boards.push(board)
-  //   return board
-  // }
+
+  async creatBoards(createBoardDto: CreateBoardDto): Promise<Board> {
+    const board = this.boardRepository.create({ ...createBoardDto, status: BoardStatus.PUBLIC })
+
+    await this.boardRepository.save(board)
+    return board
+  }
   // deleteBoard(id: string): void {
   //   const found = this.getBoardById(id)
   //   this.boards = this.boards.filter((board) => board.id !== found.id)

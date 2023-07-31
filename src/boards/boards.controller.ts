@@ -20,11 +20,11 @@ export class BoardsController {
     return this.boardsService.getBoardById(id)
   }
 
-  // @Post()
-  // @UsePipes(ValidationPipe)
-  // creatBoards(@Body() createBoardDto: CreateBoardDto): Boards {
-  //   return this.boardsService.creatBoards(createBoardDto)
-  // }
+  @Post()
+  @UsePipes(ValidationPipe)
+  creatBoards(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
+    return this.boardsService.creatBoards(createBoardDto)
+  }
 
   // @Delete('/:id')
   // deleteBoard(@Param('id') id: string): void {
