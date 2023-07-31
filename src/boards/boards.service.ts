@@ -3,18 +3,21 @@ import { v1 as uuid } from 'uuid'
 import { BoardStatus } from './board-status.enum'
 import { CreateBoardDto } from './dto/create-board.dto'
 import { DataSource } from 'typeorm'
+import { Board } from './board.entity'
+import { BoardRepository } from './board.repository'
 
 @Injectable()
 export class BoardsService {
+  constructor(private boardRepository: BoardRepository) {}
   // 로컬메모리 연습
   // getAllBoards(): Boards[] {
   //   return this.boards
   // }
-  // getBoardById(id: string): Boards {
-  //   const response = this.boards.find((board) => board.id === id)
-  //   if (!response) throw new NotFoundException(`해당 게시물이 없습니다.`)
-  //   return response
-  // }
+  getBoardById(id: number): Promise<Board> {
+    const found = this.boardRepository.findOneBy({ id })
+    if (!found) throw new NotFoundException(`해당 게시물이 없습니다.`)
+    return found
+  }
   // creatBoards(createBoardDto: CreateBoardDto) {
   //   const board: Boards = { ...createBoardDto, id: uuid(), status: BoardStatus.PUBLIC }
   //   this.boards.push(board)
