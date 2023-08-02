@@ -9,29 +9,28 @@ import { BoardRepository } from './board.repository'
 @Injectable()
 export class BoardsService {
   constructor(private boardRepository: BoardRepository) {}
-  // 로컬메모리 연습
-  // getAllBoards(): Boards[] {
-  //   return this.boards
-  // }
+
+  async getAllBoards(): Promise<Board[]> {
+    return await this.boardRepository.find()
+  }
   async getBoardById(id: number): Promise<Board> {
     const found = await this.boardRepository.findOneBy({ id })
     if (!found) throw new NotFoundException(`해당 게시물이 없습니다.`)
     return found
   }
 
-  async creatBoards(createBoardDto: CreateBoardDto): Promise<Board> {
-    const board = this.boardRepository.create({ ...createBoardDto, status: BoardStatus.PUBLIC })
+  creatBoards(createBoardDto: CreateBoardDto): Promise<Board> {
+    return this.boardRepository.createBoard(createBoardDto)
+  }
+  async deleteBoard(id: number): Promise<void> {
+    const result = await this.boardRepository.delete(id)
 
+    if (result.affected === 0) throw new NotFoundException('해당 ID에 게시물이 없습니다.')
+  }
+  async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+    const board = await this.getBoardById(id)
+    board.status = status
     await this.boardRepository.save(board)
     return board
   }
-  // deleteBoard(id: string): void {
-  //   const found = this.getBoardById(id)
-  //   this.boards = this.boards.filter((board) => board.id !== found.id)
-  // }
-  // updateBoardStatus(id: string, status: BoardStatus): Boards {
-  //   const board = this.getBoardById(id)
-  //   board.status = status
-  //   return board
-  // }
 }
