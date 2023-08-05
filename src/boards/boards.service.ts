@@ -5,6 +5,7 @@ import { CreateBoardDto } from './dto/create-board.dto'
 import { DataSource } from 'typeorm'
 import { Board } from './board.entity'
 import { BoardRepository } from './board.repository'
+import { User } from 'src/auth/user.entity'
 
 @Injectable()
 export class BoardsService {
@@ -19,14 +20,16 @@ export class BoardsService {
     return found
   }
 
-  creatBoards(createBoardDto: CreateBoardDto): Promise<Board> {
-    return this.boardRepository.createBoard(createBoardDto)
+  creatBoards(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
+    return this.boardRepository.createBoard(createBoardDto, user)
   }
+
   async deleteBoard(id: number): Promise<void> {
     const result = await this.boardRepository.delete(id)
 
     if (result.affected === 0) throw new NotFoundException('해당 ID에 게시물이 없습니다.')
   }
+
   async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
     const board = await this.getBoardById(id)
     board.status = status
